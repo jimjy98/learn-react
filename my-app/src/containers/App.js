@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import './App.css';
-import Person from './Person/Person'
-import { throwStatement, isIdentifier } from '@babel/types';
+import Persons from '../components/Persons/Persons';
+import Cockpit from '../components/Cockpit/Cockpit';
 
 class App extends Component {
   state = {
@@ -27,46 +27,42 @@ class App extends Component {
 
     const persons = [...this.state.persons];
     persons[personIndex] = person;
-    
-    this.setState( {persons: persons} );
+
+    this.setState({ persons: persons });
   }
 
   //delete person component on click
   deletePersonHandler = (personIndex) => {
     const persons = [...this.state.persons];
     persons.splice(personIndex, 1);
-    this.setState({persons: persons})
+    this.setState({ persons: persons })
   }
 
   //toggle button on click
   togglePersonsHandler = () => {
     const doesShow = this.state.showPersons;
-    this.setState({showPersons: !doesShow});
+    this.setState({ showPersons: !doesShow });
   }
 
+  //render method
   render() {
     let persons = null;
 
     if (this.state.showPersons) {
-      persons = (
-        <div>
-          {this.state.persons.map((person, index) => {
-            return <Person 
-            click = {() => this.deletePersonHandler(index)}
-            name = {person.name} 
-            age = {person.age}
-            key = {person.id}
-            changed = {(event) => this.nameChangedHandler(event, person.id)} />
-          })}
-        </div>
-      );
+      persons = <Persons
+        persons={this.state.persons}
+        clicked={this.deletePersonHandler}
+        changed={this.nameChangedHandler} />
     }
-    
+
     //main return method
     return (
       <div className="App">
-        <h1>Hi, I'm a React App</h1>
-        <button onClick={this.togglePersonsHandler} >Toggle Names</button>
+        <Cockpit
+          title={this.props.appTitle}
+          showPersons={this.state.showPersons}
+          persons={this.state.persons}
+          click={this.togglePersonsHandler} />
         {persons}
       </div>
     )
