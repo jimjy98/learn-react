@@ -4,13 +4,37 @@ import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
 
 class App extends Component {
-  state = {
-    persons: [
-      { id: 'asfa1', name: 'Max', age: 28 },
-      { id: 'vasdf1', name: 'Manu', age: 29 },
-      { id: 'asdf1', name: 'Stephanie', age: 26 }
-    ],
-    showPersons: true
+
+  constructor(props) {
+    super(props);
+    console.log('[App.js] constructor');
+    this.state = {
+      persons: [
+        { id: 'asfa1', name: 'Max', age: 28 },
+        { id: 'vasdf1', name: 'Manu', age: 29 },
+        { id: 'asdf1', name: 'Stephanie', age: 26 }
+      ],
+      showPersons: false,
+      showCockpit: true
+    }
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    console.log('[App.js] getDerivedStateFromProps', props);
+    return state;
+  }
+
+  componentDidMount() {
+    console.log('[App.js] componentDidMount');
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('[App.js] shouldComponentUpdate');
+    return true;
+  }
+
+  componentDidUpdate() {
+    console.log('[app.js] componentdidupdate');
   }
 
   //change name on input
@@ -38,14 +62,26 @@ class App extends Component {
     this.setState({ persons: persons })
   }
 
-  //toggle button on click
+  //toggle people on click
   togglePersonsHandler = () => {
     const doesShow = this.state.showPersons;
     this.setState({ showPersons: !doesShow });
   }
 
+  //bring back all people
+  getPersonsBackHandler = () => {
+    this.setState({
+      persons: [
+        { id: 'asfa1', name: 'Max', age: 28 },
+        { id: 'vasdf1', name: 'Manu', age: 29 },
+        { id: 'asdf1', name: 'Stephanie', age: 26 }
+      ]
+    });
+  }
+
   //render method
   render() {
+    console.log('[App.js] render');
     let persons = null;
 
     if (this.state.showPersons) {
@@ -58,11 +94,13 @@ class App extends Component {
     //main return method
     return (
       <div className="App">
-        <Cockpit
+        <button onClick={() => { this.setState({ showCockpit: false }) }}>Remove Cockpit</button>
+        {this.state.showCockpit ? <Cockpit
           title={this.props.appTitle}
           showPersons={this.state.showPersons}
           persons={this.state.persons}
-          click={this.togglePersonsHandler} />
+          click={this.togglePersonsHandler}
+          clicked={this.getPersonsBackHandler} /> : null}
         {persons}
       </div>
     )
